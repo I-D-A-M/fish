@@ -20,6 +20,16 @@ function error
     _common_section $argv[1] $ce $argv[2] $ce
 end
 
+function git_branch
+    set -g git_branch (git rev-parse --abbrev-ref HEAD ^ /dev/null)
+    if [ $status -ne 0 ]
+        set -ge git_branch
+        set -g git_dirty_count 0
+    else
+        set -g git_dirty_count (git status --porcelain  | wc -l | sed "s/ //g")
+    end
+end
+
 function fish_prompt
     # $status gets nuked as soon as something else is run, e.g. set_color
     # so it has to be saved asap.
@@ -48,41 +58,6 @@ function fish_prompt
         set -ge status
     end
 
-    # Track the last non-empty command. It's a bit of a hack to make sure
-    # execution time and last command is tracked correctly.
-    set -l cmd_line (commandline)
-    if test -n "$cmd_line"
-        set -g last_cmd_line $cmd_line
-        set -ge new_prompt
-    else
-        set -g new_prompt true
-    end
-
-    # Show last execution time
-    set -l now (date +%s)
-    if test $last_exec_timestamp
-        set -l taken (math $now - $last_exec_timestamp)
-        if test $taken -gt 10 -a -n "$new_prompt"
-            error ⌛ $taken
-            # Clear the last_cmd_line so pressing enter doesn't repeat
-            set -ge last_cmd_line
-        end
-    end
-    set -g last_exec_timestamp $now
-
-    # Show loadavg when too high
-    set -l load1m (uptime | grep -o '[0-9]\+\.[0-9]\+' | head -n1)
-    set -l load1m_test (math $load1m \* 100 / 1)
-    if test $load1m_test -gt 100
-        error load $load1m
-    end
-
-    # Show disk usage when low
-    set -l du (df / | tail -n1 | sed "s/  */ /g" | cut -d' ' -f 5 | cut -d'%' -f1)
-    if test $du -gt 80
-        error du $du%%
-    end
-
     # Virtual Env
     if set -q VIRTUAL_ENV
         section env (basename "$VIRTUAL_ENV")
@@ -101,25 +76,15 @@ function fish_prompt
     end
 
     # Current Directory
+    # awk to truncate paths
     # 1st sed for colourising forward slashes
     # 2nd sed for colourising the deepest path (the 'm' is the last char in the
     # ANSI colour code that needs to be stripped)
     printf $c1
-    printf (pwd | sed "s,/,$c0/$c1,g" | sed "s,\(.*\)/[^m]*m,\1/$c3,")
+    printf (pwd | awk -F'/' '{if (NF < 4) { print } else { print "../" $(NF-1)"/"$NF }}' | sed "s,/,$c0/$c1,g" | sed "s,\(.*\)/[^m]*m,\1/$c3,")
 
     # Prompt on a new line
     # Alternative unicode chars: λ ζ ∑ ∈ ∮ ➥ あお⊶    こくの  コクネ
     printf $c4
     printf "\nλ く"
-end
-
-
-function git_branch
-    set -g git_branch (git rev-parse --abbrev-ref HEAD ^ /dev/null)
-    if [ $status -ne 0 ]
-        set -ge git_branch
-        set -g git_dirty_count 0
-    else
-        set -g git_dirty_count (git status --porcelain  | wc -l | sed "s/ //g")
-    end
 end

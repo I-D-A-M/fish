@@ -20,7 +20,7 @@ set tacklebox_plugins extract grc pip python up
 # Load fishmarks (http://github.com/techwizrd/fishmarks)
 . $HOME/.fishmarks/marks.fish
 
-# source ~/.tacklebox/tacklebox.fish
+#source ~/.tacklebox/tacklebox.fish
 
 # Set standard aliases
 alias emacs='emacsclient -a "" -c'
