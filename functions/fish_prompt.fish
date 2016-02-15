@@ -1,70 +1,92 @@
-function fish_prompt
-	if not set -q -g __fish_robbyrussell_functions_defined
-    set -g __fish_robbyrussell_functions_defined
-    function _git_branch_name
-      echo (git symbolic-ref HEAD ^/dev/null | sed -e 's|^refs/heads/||')
-    end
+# Modified from https://geraldkaszuba.com/tweaking-fish-shell/
 
-    function _is_git_dirty
-      echo (git status -s --ignore-submodules=dirty ^/dev/null)
-    end
-
-    function _is_git_repo
-      git status -s >/dev/null ^/dev/null
-    end
-
-    function _hg_branch_name
-      echo (hg branch ^/dev/null)
-    end
-
-    function _is_hg_dirty
-      echo (hg status -mard ^/dev/null)
-    end
-
-    function _is_hg_repo
-      hg summary >/dev/null ^/dev/null
-    end
-
-    function _repo_branch_name
-      eval "_$argv[1]_branch_name"
-    end
-
-    function _is_repo_dirty
-      eval "_is_$argv[1]_dirty"
-    end
-
-    function _repo_type
-      if _is_hg_repo
-        echo 'hg'
-      else if _is_git_repo
-        echo 'git'
-      end
-    end
-  end
-
-  set -l cyan (set_color -o cyan)
-  set -l yellow (set_color -o yellow)
-  set -l red (set_color -o red)
-  set -l blue (set_color -o blue)
-  set -l normal (set_color normal)
-
-  set -l arrow "$red➜ "
-  if [ $USER = 'root' ]
-    set arrow "$red# "
-  end
-
-  set -l cwd $cyan(basename (prompt_pwd))
-
-  set -l repo_type (_repo_type)
-  if [ $repo_type ]
-    set -l repo_branch $red(_repo_branch_name $repo_type)
-    set repo_info "$blue $repo_type:($repo_branch$blue)"
-
-    if [ (_is_repo_dirty $repo_type) ]
-      set -l dirty "$yellow ✗"
-      set repo_info "$repo_info$dirty"
-    end
-  end
-
-  echo -n -s $arrow ' '$cwd $repo_info $normal ' '
+function _common_section
+    printf $c1
+    printf $argv[1]
+    printf $c0
+    printf ":"
+    printf $c2
+    printf $argv[2]
+    printf $argv[3]
+    printf $c0
+    printf " "
 end
+
+function section
+    _common_section $argv[1] $c3 $argv[2] $ce
+end
+
+function error
+    _common_section $argv[1] $ce $argv[2] $ce
+end
+
+function git_branch
+    set -g git_branch (git rev-parse --abbrev-ref HEAD ^ /dev/null)
+    if [ $status -ne 0 ]
+        set -ge git_branch
+        set -g git_dirty_count 0
+    else
+        set -g git_dirty_count (git status --porcelain  | wc -l | sed "s/ //g")
+    end
+end
+
+function fish_prompt
+    # $status gets nuked as soon as something else is run, e.g. set_color
+    # so it has to be saved asap.
+    set -l last_status $status
+
+    # c0 to c4 progress from dark to bright
+    # ce is the error colour
+    set -g c0 (set_color 655643)
+    set -g c1 (set_color 80BCA3)
+    set -g c2 (set_color A8A297)
+    set -g c3 (set_color F6DC37)
+    set -g c4 (set_color EF4D28)
+    set -g ce (set_color $fish_color_error)
+
+    # Clear the line because fish seems to emit the prompt twice. The initial
+    # display, then when you press enter.
+    printf "\033[K"
+
+    # Current time
+    printf $c0
+    printf '{'
+    printf (date "+$c3%H$c0:$c3%M$c0")
+    printf '} ζ '
+    if [ $last_status -ne 0 ]
+        error last $last_status
+        set -ge status
+    end
+
+    # Virtual Env
+    if set -q VIRTUAL_ENV
+        section env (basename "$VIRTUAL_ENV")
+    end
+
+    # Git branch and dirty files
+   
+    git_branch
+    if set -q git_branch
+        set out $git_branch
+        if test $git_dirty_count -gt 0
+            set out "$out$c0:$ce ∑ $git_dirty_count"
+        end
+	echo -n '≺ '
+        section  $out
+	echo -n '≻ '
+    end
+
+    # Current Directory
+    # awk to truncate paths
+    # 1st sed for colourising forward slashes
+    # 2nd sed for colourising the deepest path (the 'm' is the last char in the
+    # ANSI colour code that needs to be stripped)
+    printf $c1
+    printf (pwd | awk -F'/' '{if (NF < 4) { print } else { print "../" $(NF-1)"/"$NF }}' | sed "s,/,$c0/$c1,g" | sed "s,\(.*\)/[^m]*m,\1/$c3,")
+
+    # Prompt on a new line
+    # Alternative unicode chars: λ ζ ∑ ∈ ∮ ➥ あお⊶    こくの  コクネ
+    printf $c4
+    printf "\nλ く"
+end
+
