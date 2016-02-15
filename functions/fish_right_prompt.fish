@@ -3,10 +3,10 @@ function fish_right_prompt
   if git_is_dirty
     printf "$c4✘ "
   else
-    printf "$c3✔"
+    printf "$c3✔ "
   end
   if git_is_staged
-    printf "$c3⚓"
+    printf "$c3⚓ "
   end
   if test $git_dirty_count -gt 0
     printf "$c0:$ce ∑ $git_dirty_count"

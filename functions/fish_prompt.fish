@@ -60,6 +60,7 @@ function fish_prompt
     end
 
     # Set git branch name
+    git_branch
     if git_is_repo
         set -g branchName (git_branch_name)
     end
