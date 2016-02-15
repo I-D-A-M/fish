@@ -9,7 +9,7 @@ function _common_section
     printf $argv[2]
     printf $argv[3]
     printf $c0
-    printf " "
+    printf ""
 end
 
 function section
@@ -59,31 +59,13 @@ function fish_prompt
         section env (basename "$VIRTUAL_ENV")
     end
 
-    # Git branch and dirty files
-    git_branch
-    if set -q git_branch
-        set out $git_branch
-        if test $git_dirty_count -gt 0
-            set out "$out$c0:$ce ∑ $git_dirty_count"
-        end
-
-    # Using fisherman funstions!
+    # Set git branch name
     if git_is_repo
-        set -g repoName (git_branch_name)
-        if git_is_dirty
-            set -g git_dirty_count (git status --porcelain  | wc -l | sed "s/ //g")
-            set repoName "$repoName $c0✘ {$ce∑ $git_dirty_count$c0}"
-        else
-            set repoName "$repoName $c3✔"
-        end
-        if git_is_staged
-            set repoName "$repoName ⚓"
-        end
+        set -g branchName (git_branch_name)
     end
-	echo -n '≺ '
-        section  $repoName
-	echo -n '≻ '
-    end
+    echo -n '≺ '
+    section  $branchName
+    echo -n "≻ "
 
     # Current Directory
     # awk to truncate paths
@@ -94,7 +76,7 @@ function fish_prompt
     printf (pwd | awk -F'/' '{if (NF < 4) { print } else { print "../" $(NF-1)"/"$NF }}' | sed "s,/,$c0/$c1,g" | sed "s,\(.*\)/[^m]*m,\1/$c3,")
 
     # Prompt on a new line
-    # Alternative unicode chars: λ ζ ∑ ∈ ∮ ⚓ ✘ ✔ ➥ あお⊶    こくの  コクネ
+    # Alternative unicode chars: λ ζ ∑ ∈ ∮ ⚓ ✘ ✔ ➥ ⊶    こくの  コクネ
     printf $c4
     printf "\nλ く"
 end
