@@ -48,11 +48,12 @@ function fish_prompt
     # display, then when you press enter.
     printf "\033[K"
 
-    # Current time
+    # User details
     printf $c0
     printf '{'
-    printf (date "+$c3%H$c0:$c3%M$c0")
-    printf '} ζ '
+    printf "$c3$USER$c0@$c3"
+    echo (hostname) | tr -d '\n'
+    printf "$c0} ζ "
 
     # Virtual Env
     if set -q VIRTUAL_ENV
@@ -63,10 +64,10 @@ function fish_prompt
     git_branch
     if git_is_repo
         set -g branchName (git_branch_name)
+        echo -n '≺ '
+        section  $branchName
+        echo -n "≻ "
     end
-    echo -n '≺ '
-    section  $branchName
-    echo -n "≻ "
 
     # Current Directory
     # awk to truncate paths
