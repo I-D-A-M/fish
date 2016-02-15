@@ -9,7 +9,7 @@ function fish_right_prompt
     printf "$c3⚓ "
   end
   if test $git_dirty_count -gt 0
-    printf "$c0:$ce ∑ $git_dirty_count"
+    printf "$c0:$c3 ∑ $git_dirty_count"
   end
   set_color -o 666
   echo ' |'
