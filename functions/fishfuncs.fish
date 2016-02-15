@@ -1,3 +1,3 @@
 function fishfuncs
-	emacs ~/.config/fish/functions
+	atom ~/.config/fisherman/functions
 end

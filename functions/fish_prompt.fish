@@ -53,10 +53,6 @@ function fish_prompt
     printf '{'
     printf (date "+$c3%H$c0:$c3%M$c0")
     printf '} ζ '
-    if [ $last_status -ne 0 ]
-        error last $last_status
-        set -ge status
-    end
 
     # Virtual Env
     if set -q VIRTUAL_ENV
@@ -64,15 +60,28 @@ function fish_prompt
     end
 
     # Git branch and dirty files
-   
     git_branch
     if set -q git_branch
         set out $git_branch
         if test $git_dirty_count -gt 0
             set out "$out$c0:$ce ∑ $git_dirty_count"
         end
+
+    # Using fisherman funstions!
+    if git_is_repo
+        set -g repoName (git_branch_name)
+        if git_is_dirty
+            set -g git_dirty_count (git status --porcelain  | wc -l | sed "s/ //g")
+            set repoName "$repoName $c0✘ {$ce∑ $git_dirty_count$c0}"
+        else
+            set repoName "$repoName $c3✔"
+        end
+        if git_is_staged
+            set repoName "$repoName ⚓"
+        end
+    end
 	echo -n '≺ '
-        section  $out
+        section  $repoName
 	echo -n '≻ '
     end
 
@@ -85,8 +94,7 @@ function fish_prompt
     printf (pwd | awk -F'/' '{if (NF < 4) { print } else { print "../" $(NF-1)"/"$NF }}' | sed "s,/,$c0/$c1,g" | sed "s,\(.*\)/[^m]*m,\1/$c3,")
 
     # Prompt on a new line
-    # Alternative unicode chars: λ ζ ∑ ∈ ∮ ➥ あお⊶    こくの  コクネ
+    # Alternative unicode chars: λ ζ ∑ ∈ ∮ ⚓ ✘ ✔ ➥ あお⊶    こくの  コクネ
     printf $c4
     printf "\nλ く"
 end
-
