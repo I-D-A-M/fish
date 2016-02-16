@@ -49,15 +49,15 @@ function fish_prompt
     printf "\033[K"
 
     # User details
-    printf $c0
-    printf '{'
     printf "$c3$USER$c0@$c3"
     echo (hostname) | tr -d '\n'
-    printf "$c0} ζ "
+    printf "$c0 ζ "
 
-    # Virtual Env
+    # Virtual Env: alternate icons - ᔞ  ⍫ ⍱ ♈  ⚕ ℣
     if set -q VIRTUAL_ENV
-        section env (basename "$VIRTUAL_ENV")
+        echo -n '≼ '
+        section ⚕ (basename "$VIRTUAL_ENV")
+        echo -n "≽ "
     end
 
     # Set git branch name
@@ -78,7 +78,7 @@ function fish_prompt
     printf (pwd | awk -F'/' '{if (NF < 4) { print } else { print "../" $(NF-1)"/"$NF }}' | sed "s,/,$c0/$c1,g" | sed "s,\(.*\)/[^m]*m,\1/$c3,")
 
     # Prompt on a new line
-    # Alternative unicode chars: λ ζ ∑ ∈ ∮ ⚓ ✘ ✔ ➥ ⊶    こくの  コクネ
+    # Alternative unicode prompt chars: λ ζ ∑ ∈ ∮ ⚓ ✘ ✔ ➥ ⊶    こくの  コクネ
     printf $c4
     printf "\nλ く"
 end

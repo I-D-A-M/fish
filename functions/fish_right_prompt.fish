@@ -1,5 +1,5 @@
 function fish_right_prompt
-  set -l exit_code $status
+  # Set git status indicators if we are in a git repo
   if git_is_dirty
     printf "$c4✘ "
   else
@@ -11,6 +11,9 @@ function fish_right_prompt
   if test $git_dirty_count -gt 0
     printf "$c0:$c3 ∑ $git_dirty_count"
   end
+
+  # Record last exit code
+  set -l exit_code $status
   set_color -o 666
   echo ' |'
   printf $c2
@@ -18,6 +21,8 @@ function fish_right_prompt
     printf $c4
   end
   printf '%d' $exit_code
+
+  # Echo current time
   set_color -o 666
   echo '|'
   set_color -o 777
