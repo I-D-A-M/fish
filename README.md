@@ -3,4 +3,6 @@ This repo is intended for tracking my shell scripts and setup for the [fish shel
 
 That said, config.fish is a good place to start if you haven't used fish before (equivalent to your .bashrc file) and fish_prompt.fish began as a modified version of [this](https://geraldkaszuba.com/tweaking-fish-shell/) prompt by Gerald Kaszuba and has since pulled in ideas and fun stuff like a right prompt from other examples i've foudn through the fantastic [fisherman](https://github.com/fisherman/fisherman) plugin framework. It does require a [powerline](https://github.com/powerline/fonts) font for a few of the characters such as the git branch icon. (Inconsolata is my preferred choice!)
 
+![alt text](prompt-demo.png "Prompt Demo")
+
 -I.D.A-M
