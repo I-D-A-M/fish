@@ -1,3 +1,3 @@
 function fish_greeting
-	cat /media/Windows/Users/innes/todo.txt
+	cat /home/innes/.config/fisherman/greeting.txt
 end

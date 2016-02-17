@@ -1,0 +1,10 @@
+{guake is installed and bound to ` once launched}
+> Installed Languages:
+  > Python  -- py3 / python   [ipyqt and ipynote for anaconda python3 ipython use]
+  > C       -- make           [Standard compiler tools through gcc]
+    	    -- valgrind	      [memory profiler]
+  > Go      -- go             [lots of tooling available through "go"]
+  > Haskell -- ghci           [ghc for compiling, can also run in ipython notebook]
+  > Rust    -- cargo          [package manager and build tool]
+  > Julia   -- julia          [can also run in ipython notebook]
+  > Racket  -- drracket       [this is a minimalist IDE for a dialect of Scheme]
