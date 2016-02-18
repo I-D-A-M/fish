@@ -30,18 +30,18 @@ alias jupynote="/home/innes/anaconda3/bin/ipython notebook &"
 
 # Docker helper functions
 function docker-image-cleanup -d "Remove dangling docker images from the host registry"
-    docker rmi $(docker images -f "dangling=true" -q)
+    sudo docker rmi (sudo docker images -f "dangling=true" -q)
 end
 
-function docker-stop -d "Stop all currently active images"
+function docker-stop -d "Stop all currently active containers"
     sudo docker stop (sudo docker ps -aq) 
 end
 
-function docker-kill -d "Kill all current docker images"
+function docker-kill -d "Kill all current docker containers"
     sudo docker kill (sudo docker ps -aq) 
 end
 
-function docker-rm -d "Remove all current docker images"
+function docker-rm -d "Remove all current docker containers"
     sudo docker rm (sudo docker ps -aq)
 end
 
