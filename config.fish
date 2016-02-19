@@ -45,6 +45,9 @@ function docker-rm -d "Remove all current docker containers"
     sudo docker rm (sudo docker ps -aq)
 end
 
+function docker-psa -d "List all currently active docker containers"
+    sudo docker ps -a
+end
 
 # Set up path environment variables for Haskell, Python and Go
 # These will need to be rewritten for the mac!

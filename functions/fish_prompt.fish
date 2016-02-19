@@ -49,7 +49,11 @@ function fish_prompt
     printf "\033[K"
 
     # User details
-    printf "$c3$USER$c0@$c3"
+    if [ $USER = root ]
+      printf "$c4$USER$c0@$c3"
+    else
+      printf "$c3$USER$c0@$c3"
+    end
     echo (hostname) | tr -d '\n'
     printf "$c0 ζ "
 
