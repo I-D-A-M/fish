@@ -15,10 +15,10 @@ source $fisher_home/config.fish
 # {-- My aliases --}
 # Shell aliases
 alias emacs='emacsclient -a "" -c'
-alias econf="emacs /home/innes/.emacs"
-alias todo="emacs /media/Windows/Users/innes/todo.txt"
+alias econf='emacs /home/innes/.emacs'
+alias todo='emacs /media/Windows/Users/innes/todo.txt'
 alias lss='ls -s -h -1'
-alias lsa="ls -a"
+alias lsa='ls -a'
 alias fixapt='sudo rm /var/lib/apt/lists/* -vf'
 
 # Python based aliases
